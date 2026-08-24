@@ -1,0 +1,7 @@
+interface:
+  display_name: "Vidiohalo 视频创作"
+  short_description: "通过自然语言对话创建一键口播与爆款复刻，并查询任务进度"
+  brand_color: "#00B875"
+  default_prompt: "Use $vidiohalo-video-creator to create a Vidiohalo video from my script and reference assets."
+policy:
+  allow_implicit_invocation: true
