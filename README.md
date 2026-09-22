@@ -26,14 +26,14 @@ Skill 创建的任务会像网页端任务一样显示在 Vidiohalo 的“任务
 把这个仓库地址发给 Codex，并说：
 
 ```text
-请安装这个 Skill：https://github.com/jinqiupeter/vidiohalo-video-creator-skill
+请安装这个 Skill：https://github.com/vidiohalo/vidiohalo-video-creator-skill
 ```
 
 ### 方式二：手动安装
 
 ```bash
 mkdir -p ~/.codex/skills
-git clone https://github.com/jinqiupeter/vidiohalo-video-creator-skill.git \
+git clone https://github.com/vidiohalo/vidiohalo-video-creator-skill.git \
   ~/.codex/skills/vidiohalo-video-creator
 ```
 
@@ -154,4 +154,3 @@ python3 scripts/vidiohalo.py --help
 ## License
 
 [MIT](LICENSE)
-
