@@ -79,7 +79,9 @@ def main() -> None:
     oneclick.add_argument("--voice", action="append", default=[])
     oneclick.add_argument("--product", action="append", default=[])
     oneclick.add_argument("--broll", action="append", default=[])
-    oneclick.add_argument("--speaker", choices=["male", "female"], default="male")
+    speaker = oneclick.add_mutually_exclusive_group()
+    speaker.add_argument("--voice-id", help="Exact stock or ready cloned voice ID from the selected site")
+    speaker.add_argument("--speaker", choices=["male", "female"], help="Legacy CN stock voice selector")
     oneclick.add_argument("--speech-rate", type=int, default=0)
     add_output_options(oneclick)
 
@@ -102,14 +104,21 @@ def main() -> None:
     elif args.command == "status":
         result = request_json("GET", f"/agent/v1/creations/{args.id}")
     elif args.command == "create-oneclick":
-        result = request_json("POST", "/agent/v1/creations", {
+        payload = {
             "workflow": "oneclick", "script": args.script, "requirements": args.requirements,
             "resolution": args.resolution, "aspect_ratio": args.aspect_ratio or "9:16",
             "person_asset_ids": args.person, "voice_asset_ids": args.voice,
             "product_asset_ids": args.product, "broll_asset_ids": args.broll,
-            "tts_speaker": "zh_female_meilinvyou_uranus_bigtts" if args.speaker == "female" else "zh_male_taocheng_uranus_bigtts",
             "speech_rate": args.speech_rate,
-        })
+        }
+        if args.voice_id:
+            payload["tts_speaker"] = args.voice_id
+        elif args.speaker:
+            payload["tts_speaker"] = {
+                "male": "zh_male_taocheng_uranus_bigtts",
+                "female": "zh_female_meilinvyou_uranus_bigtts",
+            }[args.speaker]
+        result = request_json("POST", "/agent/v1/creations", payload)
     else:
         uses_asset = bool(args.source_asset)
         result = request_json("POST", "/agent/v1/creations", {

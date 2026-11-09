@@ -7,7 +7,7 @@
 - 查询和复用你的 Vidiohalo 素材；
 - 上传已获授权的图片、音频和视频；
 - 创建一键口播视频；
-- 从公开视频、素材或社交平台分享文本创建爆款复刻；
+- 从公开视频、素材或社交平台分享文本启动爆款复刻分析；
 - 查询生成进度，并返回 Vidiohalo 任务详情页。
 
 Skill 创建的任务会像网页端任务一样显示在 Vidiohalo 的“任务”页面中，并使用同一个账户的点数和套餐权限。
@@ -16,7 +16,7 @@ Skill 创建的任务会像网页端任务一样显示在 Vidiohalo 的“任务
 
 - Python 3.10 或更高版本；
 - 支持 `SKILL.md` 的 Agent（推荐 Codex）；
-- Vidiohalo 付费套餐。Free 套餐可以浏览 Skill，但不能创建 Agent Key 或通过 Agent API 发起生成；
+- Vidiohalo 账户（Free 和付费套餐均可使用）；
 - 一个 Vidiohalo Agent Key。
 
 ## 安装
@@ -54,10 +54,10 @@ export VIDIOHALO_AGENT_KEY='你的 Agent Key'
 
 请勿把 Agent Key 粘贴到聊天、截图、代码、命令行参数或 Git 仓库中。这个 Key 代表你的账户权限，发起视频生成会消耗账户点数。
 
-默认 API 地址是 `https://vidiohalo.com/api`。只有在连接自建或本地环境时才需要配置：
+默认连接中国站 `https://vidiohalo.com/api`。使用国际站时，在运行 Agent 的环境中设置同站的 API 地址，并使用国际站签发的 Key：
 
 ```bash
-export VIDIOHALO_API_BASE_URL='http://localhost:8000'
+export VIDIOHALO_API_BASE_URL='https://videohalo.ai/api'
 ```
 
 ## 自然语言使用
@@ -77,6 +77,8 @@ export VIDIOHALO_API_BASE_URL='http://localhost:8000'
 ```
 
 Agent 会先收集缺少的信息，展示本次生成的摘要和点数消耗提醒，并在你确认后提交。创建请求是计费操作，Skill 不会在结果未知时盲目重试。
+
+爆款复刻的分析完成后，请打开返回的项目页面，查看方案并确认生成。需要直接使用完整朗读录音、校准字幕或固定已确认的 TTS 音轨时，请在网页端使用一键口播。
 
 ## 命令行使用
 
@@ -102,6 +104,8 @@ python3 scripts/vidiohalo.py create-oneclick \
   --resolution 720P \
   --aspect-ratio 9:16
 ```
+
+已知同站的内置或已就绪克隆音色 ID 时，可用 `--voice-id`。示例里的 `--voice` 选择素材库中的声音样本。
 
 创建爆款复刻：
 
