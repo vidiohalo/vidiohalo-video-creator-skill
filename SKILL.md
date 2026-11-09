@@ -1,6 +1,6 @@
 ---
 name: vidiohalo-video-creator
-description: Create Vidiohalo one-click talking videos or viral remakes through natural-language conversation. Use when a user wants to turn a script into a talking video, remake a reference or social video, upload/select Vidiohalo assets, start a billable generation, or check its progress.
+description: Create Vidiohalo Talking Video jobs and Viral Remake analyses, select or upload Vidiohalo assets, and check task status. Use for the Vidiohalo Agent API on Global or CN. For a user-requested direct model API experiment, follow the named provider's workflow.
 ---
 
 # Vidiohalo Video Creator
@@ -9,9 +9,9 @@ Create a Vidiohalo task by collecting intent conversationally, then calling `scr
 
 ## Authentication
 
-Require a paid Vidiohalo plan and `VIDIOHALO_AGENT_KEY` in the environment. Free accounts cannot create or use Agent Keys. If the key is missing, direct an eligible user to **Vidiohalo → 个人中心 → Agent** to create a Key, then ask them to configure it as an environment variable. Never ask the user to paste the Key into chat, print it, store it in files, or place it in command arguments.
+Require a Vidiohalo account and `VIDIOHALO_AGENT_KEY` in the environment. Free and paid accounts can create and use Agent Keys. If the key is missing, direct the user to **Vidiohalo → 个人中心 → Agent** to create a Key, then ask them to configure it as an environment variable. Never ask the user to paste the Key into chat, print it, store it in files, or place it in command arguments.
 
-Use `VIDIOHALO_API_BASE_URL` only for a non-production deployment; otherwise the script defaults to `https://vidiohalo.com/api`.
+Use the site where the user created their key and assets. The client defaults to CN at `https://vidiohalo.com/api`. For Global, set `VIDIOHALO_API_BASE_URL=https://videohalo.ai/api` for the invocation. If the request includes a Vidiohalo job link, use its site. Keep the same site for asset lookup, creation, and status.
 
 ## Conversation flow
 
@@ -20,9 +20,9 @@ Use `VIDIOHALO_API_BASE_URL` only for a non-production deployment; otherwise the
 3. Resolve materials:
    - Run `list-assets` to reuse existing Vidiohalo assets.
    - For a local file, first confirm the user owns or is authorized to use it, then run `upload --rights-confirmed`.
-4. Summarize the script/instructions, references, resolution, and aspect ratio before submission. State clearly that starting generation consumes account points.
-5. Submit once after the user confirms. Do not automatically retry a create request whose response is unknown; query status first to avoid duplicate billable tasks.
-6. Return the task ID and full Vidiohalo detail URL. Use `status` for later updates.
+4. Summarize the script or instructions, references, output settings, and what the submission starts. Explain that work uses the account's points and plan limits. Confirm before a billable submission unless the user already explicitly approved that exact action.
+5. Submit once. If the outcome is unknown, check the returned task ID if available or ask the user to check Jobs on the same site before considering resubmission.
+6. Return the task ID, current status, and full Vidiohalo detail URL. Use `status` for updates. If a job is waiting for credits or a user action, report the action instead of continuing to poll.
 
 ## One-click talking video
 
@@ -31,9 +31,11 @@ Require:
 - Complete spoken script.
 - At least one person image asset or authorized public person-image URL.
 
-Ask optionally for voice reference, product images, B-roll, speech speed, resolution (`720P` or `2K`), and aspect ratio. Defaults are `720P`, `9:16`, and normal speech speed.
+Ask optionally for the preferred voice, product images, B-roll, speech speed, resolution (`720P` or `2K`), and aspect ratio. Defaults are `720P`, `9:16`, and normal speech speed. For a known stock or ready cloned voice ID from the same site, pass `--voice-id`. A raw `--voice` asset is a timbre reference.
 
-Do not treat a voice reference as a timing audio track; it is the target IP voice reference. The service creates its own TTS timing preview internally.
+The Agent API derives timing from TTS. If the user wants to use a complete recording or an exact confirmed TTS soundtrack, send them to the same site's Talking Video page to use that workflow. The Agent API accepts a script and voice references and has no fields to attach the confirmed soundtrack or its optional caption calibration script.
+
+Keep the user's spoken wording intact. Natural sentence and clause boundaries help the service plan clips. Let the service choose boundaries within its duration limit. If an original-audio job reports a sync issue, check its existing job page. Eligible clips can be split and recovered automatically. If the page asks for a retry, use the clip-level action there to preserve successful clips.
 
 Example:
 
@@ -55,7 +57,7 @@ Require:
 
 Supported social platforms: `douyin`, `xiaohongshu`, `kuaishou`, `wechat`, and `bilibili`. Pass the full copied share text; the service extracts the URL.
 
-Person, product, and audio references are optional. Defaults are `720P`, source aspect ratio, and automatic remake planning.
+Person, product, and audio references are optional. Defaults are `720P`, source aspect ratio, and automatic remake planning. Creation queues analysis. When status is `analysis_ready`, open the returned remake link to review the plan and confirm generation. If payment is required, direct the user to the same project page.
 
 Example:
 
@@ -73,5 +75,10 @@ python3 scripts/vidiohalo.py create-remake \
 - Do not invent asset IDs. List or upload assets first.
 - Do not expose provider names, internal prompts, profit multipliers, or internal resolution aliases.
 - Do not claim completion until `status` reports `completed`.
-- For `401`, stop and ask the user to configure their Agent Key. For `403`, report the API message: the Key may be invalid/revoked, or the account may need a paid plan.
-- For insufficient points, link the user to `https://vidiohalo.com/pricing`; do not alter the request to evade billing.
+- For `401`, stop and ask the user to configure their Agent Key. For `403`, report that the Key may be invalid or revoked.
+- For insufficient points, use the pricing page of the selected site.
+- If safety review rejects the request, say “内容未通过安全审核。如有疑问，请联系客服。” or “This content did not pass the safety review. If you have any questions, please contact support.” Use the user's language.
+
+## Direct model experiments
+
+For a request to call an external model directly, use its API and credentials separately from the Vidiohalo workflow. Verify input capabilities and respect the user's duration and spend constraints. See [the xAI notes](references/api.md#direct-xai-tests) for Grok image and audio inputs. Ask before using private Vidiohalo materials with an additional provider when the user has not authorized that transfer.
