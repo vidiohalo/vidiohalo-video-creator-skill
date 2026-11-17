@@ -29,7 +29,7 @@ Use the site where the user created their key and assets. The client defaults to
 Require:
 
 - Complete spoken script.
-- At least one person image asset or authorized public person-image URL.
+- At least one person image asset ID returned by this site’s asset list or upload.
 
 Ask optionally for the preferred voice, product images, B-roll, speech speed, resolution (`720P` or `2K`), and aspect ratio. Defaults are `720P`, `9:16`, and normal speech speed. For a known stock or ready cloned voice ID from the same site, pass `--voice-id`. A raw `--voice` asset is a timbre reference.
 
@@ -79,6 +79,16 @@ python3 scripts/vidiohalo.py create-remake \
 - For insufficient points, use the pricing page of the selected site.
 - If safety review rejects the request, say “内容未通过安全审核。如有疑问，请联系客服。” or “This content did not pass the safety review. If you have any questions, please contact support.” Use the user's language.
 
-## Direct model experiments
+## AI director and delivery on the website
 
-For a request to call an external model directly, use its API and credentials separately from the Vidiohalo workflow. Verify input capabilities and respect the user's duration and spend constraints. See [the xAI notes](references/api.md#direct-xai-tests) for Grok image and audio inputs. Ask before using private Vidiohalo materials with an additional provider when the user has not authorized that transfer.
+Open the returned project link to inspect the AI director’s breakdown, see which elements can be retained or replaced, and refine the plan through conversation. Research can help fill factual context, but the user may still need to supply product details or authorized materials. Report the actual blocking reason shown by the project. Preserve the existing project when resolving missing information, credits or validation failures.
+
+The website can automatically generate after a successful analysis when that project has automatic generation enabled. The current Agent creation schema does not expose this option and creates analysis-only projects. At `analysis_ready`, hand off to the same project page. Do not interpret analysis readiness as a completed video.
+
+For completed videos, direct the user to the same detail page to download the result, generate a cover and publishing copy, edit subtitle text/style/font or download SRT, and regenerate supported individual clips. Remake delivery retains the reference/result comparison. These actions are currently web workflows, not commands in this client.
+
+On mobile, open the top-right navigation drawer to reach Jobs, Profile, pricing, language and theme controls. On desktop, use the top navigation. Account keys remain under Profile → Agent.
+
+## Local agents and knowledge bases
+
+This is Vidiohalo’s own video-creation skill. In a compatible host such as WorkBuddy, OpenClaw or Codex, use the user-authorized local documents and knowledge-base results to prepare the script, creative direction and references. Host support for installing and executing SKILL.md packages varies. Keep supplied facts and requested spoken wording intact, ask for missing business facts, then submit the approved content through the selected Vidiohalo site.
