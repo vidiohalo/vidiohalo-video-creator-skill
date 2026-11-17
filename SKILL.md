@@ -1,6 +1,6 @@
 ---
 name: vidiohalo-video-creator
-description: Create Vidiohalo Talking Video jobs and Viral Remake analyses, select or upload Vidiohalo assets, and check task status. Use for the Vidiohalo Agent API on Global or CN. For a user-requested direct model API experiment, follow the named provider's workflow.
+description: Create Vidiohalo Talking Video jobs and Viral Remake analyses, select or upload Vidiohalo assets, check remaining points, and check task status. Use for the Vidiohalo Agent API on Global or CN. For a user-requested direct model API experiment, follow the named provider's workflow.
 ---
 
 # Vidiohalo Video Creator
@@ -12,6 +12,16 @@ Create a Vidiohalo task by collecting intent conversationally, then calling `scr
 Require a Vidiohalo account and `VIDIOHALO_AGENT_KEY` in the environment. Free and paid accounts can create and use Agent Keys. If the key is missing, direct the user to **Vidiohalo → 个人中心 → Agent** to create a Key, then ask them to configure it as an environment variable. Never ask the user to paste the Key into chat, print it, store it in files, or place it in command arguments.
 
 Use the site where the user created their key and assets. The client defaults to CN at `https://vidiohalo.com/api`. For Global, set `VIDIOHALO_API_BASE_URL=https://videohalo.ai/api` for the invocation. If the request includes a Vidiohalo job link, use its site. Keep the same site for asset lookup, creation, and status.
+
+## Remaining points
+
+When asked for remaining points, account balance, or whether points are held by running jobs, run:
+
+```bash
+python3 scripts/vidiohalo.py balance
+```
+
+This does not create a task or charge points. Report `available_points` as spendable points and `held_points` separately as reserved for running work; do not add held points to the available balance. The response also includes plan/top-up balances and expiry dates. Values are already in points, not internal subunits. Query the site owning the key; CN and Global balances are separate. Do not infer how many seconds can be generated without a current quote. A balance-only request needs no creation details or billable confirmation. If the key fails, report the authentication error without trying another account.
 
 ## Conversation flow
 

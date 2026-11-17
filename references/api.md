@@ -4,6 +4,17 @@ Base URLs: CN `https://vidiohalo.com/api`; Global `https://videohalo.ai/api`. Se
 
 All Agent endpoints require a Vidiohalo account and `Authorization: Bearer ${VIDIOHALO_AGENT_KEY}`. Free and paid users can create and revoke this credential in **个人中心 → Agent**. A Key can create billable tasks using that user's point balance. Full plaintext is returned only once and is never stored by Vidiohalo.
 
+## Balance
+
+`GET /agent/v1/balance` returns the account identified by the Agent Key; it accepts no user ID. It is non-billable and creates no task. Available on CN and Global.
+
+- `available_points`: points available to spend now.
+- `held_points`: points reserved by unfinished work, excluded from the available balance.
+- `monthly_points_remaining`, `topup_points_remaining`: plan allowance and additional-point balances.
+- `plan_id`, `subscription_status`, `current_period_end`, `monthly_expires_at`: plan status and expiry information; dates may be null.
+
+All point values are already display units. No user session cookie is needed. Missing, invalid or revoked keys are rejected. A fresh query reflects the same expiry handling as the web wallet.
+
 ## Assets
 
 `GET /agent/v1/assets` lists reusable assets. Use ready assets whose MIME type matches the requested role: image for person/product, audio for voice, video for remake source or B-roll.

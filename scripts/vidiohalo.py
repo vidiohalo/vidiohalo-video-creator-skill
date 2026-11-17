@@ -65,6 +65,7 @@ def add_output_options(parser: argparse.ArgumentParser) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Vidiohalo Agent API client")
     sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("balance", help="Check available and held points for this account")
     sub.add_parser("list-assets")
     upload_parser = sub.add_parser("upload")
     upload_parser.add_argument("path", type=Path)
@@ -97,7 +98,9 @@ def main() -> None:
     add_output_options(remake)
 
     args = parser.parse_args()
-    if args.command == "list-assets":
+    if args.command == "balance":
+        result = request_json("GET", "/agent/v1/balance")
+    elif args.command == "list-assets":
         result = request_json("GET", "/agent/v1/assets")
     elif args.command == "upload":
         result = upload(args.path)
