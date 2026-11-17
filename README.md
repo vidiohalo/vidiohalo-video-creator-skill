@@ -162,3 +162,14 @@ python3 scripts/vidiohalo.py --help
 ## License
 
 [MIT](LICENSE)
+
+
+## 查询剩余点数
+
+可以直接对智能体说“查一下我还剩多少点”。技能会使用当前站点的 Agent Key 查询余额，不创建任务、不扣点。
+
+```bash
+python3 scripts/vidiohalo.py balance
+```
+
+返回可用点数、任务冻结点数、套餐与补充点数余额以及到期时间。冻结点数不计入可用余额；不同站点的余额分别查询。
